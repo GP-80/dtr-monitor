@@ -1,0 +1,4 @@
+dtr_monitor.db
+*.log
+__pycache__/
+*.pyc
