@@ -15,12 +15,12 @@ from pathlib import Path
 from urllib.request import urlopen, Request
 
 # ── Config ───────────────────────────────────────────────────────────────────
-PI_IP       = '192.168.1.94'
+from config import PI_IP, DB_PATH as _DB_PATH
 ICECAST_URL = f'http://{PI_IP}:8000/status-json.xsl'
 STATS_URL   = f'http://{PI_IP}:8001/stats'
 INTERVAL    = 15       # seconds between polls
 PRUNE_DAYS  = 7        # delete rows older than this
-DB_PATH     = Path(r'G:\DTR\DTR-monitor\dtr_monitor.db')
+DB_PATH     = Path(_DB_PATH)
 
 # ── Logging ──────────────────────────────────────────────────────────────────
 logging.basicConfig(

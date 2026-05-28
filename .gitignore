@@ -1,3 +1,4 @@
+config.py
 dtr_monitor.db
 *.log
 __pycache__/

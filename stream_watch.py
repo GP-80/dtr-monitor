@@ -8,11 +8,9 @@ import time
 import sys
 from datetime import datetime
 
-PI_IP       = '192.168.1.94'
+from config import PI_IP, STREAM_CF, META_CF
 STATS_URL   = f'http://{PI_IP}:8001/stats'
 ICE_LOCAL   = f'http://{PI_IP}:8000/status-json.xsl'
-STREAM_CF   = 'https://stream.deeptripradio.net/live'
-META_CF     = 'https://stream.deeptripradio.net/status-json.xsl'
 INTERVAL    = 8   # seconds between polls
 
 def ts():

@@ -13,7 +13,7 @@ from urllib.request import urlopen, Request
 from urllib.error import URLError
 
 # ── Config ─────────────────────────────────────────────────────────────────────
-PI_IP        = '192.168.1.94'
+from config import PI_IP
 ICECAST_URL  = f'http://{PI_IP}:8000/status-json.xsl'
 STATS_URL    = f'http://{PI_IP}:8001/stats'
 SESSIONS_URL = f'http://{PI_IP}:8001/sessions'
