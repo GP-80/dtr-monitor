@@ -1,4 +1,5 @@
 config.py
+LOCAL_SETUP.md
 dtr_monitor.db
 *.log
 __pycache__/
