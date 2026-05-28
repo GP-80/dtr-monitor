@@ -4,6 +4,8 @@ Real-time monitoring dashboard for [Deep Trip Radio](https://deeptripradio.net/)
 
 Built with Python (stdlib only) + SQLite + Grafana.
 
+![DTR Monitor Dashboard](Screenshot.jpg)
+
 ---
 
 ## Architecture
