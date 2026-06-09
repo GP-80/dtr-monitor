@@ -20,12 +20,16 @@ pi_stats.py     :8001  ──────────►        │
                                           │
                                           ▼
                                     Grafana  :3000
+                                          │
+                                          ▼
+                                    dashboard_app.py  (tray app)
 ```
 
 - **`collector.py`** — runs on Windows; polls icecast2 for stream status and `pi_stats.py` for system metrics every 15 seconds; writes to a local SQLite database
 - **`pi_stats.py`** — lightweight HTTP server on the Pi (port 8001); serves CPU, RAM, temperature, disk, WiFi, uptime, and service status as JSON
 - **`dtr_monitor.db`** — SQLite database; holds 7 days of rolling data (~15 MB max)
 - **Grafana** — reads the SQLite database via the `frser-sqlite-datasource` plugin and displays the dashboard
+- **`dashboard_app.py`** — Windows tray application; opens the Grafana dashboard in a frameless WebView2 window; minimises to system tray on close
 
 ---
 
@@ -35,6 +39,7 @@ pi_stats.py     :8001  ──────────►        │
 |---|---|
 | `collector.py` | Windows-side poller — polls Pi every 15 s, writes to SQLite |
 | `pi_stats.py` | Pi-side stats server — serves system metrics on port 8001 |
+| `dashboard_app.py` | Windows tray app — opens Grafana in a frameless WebView2 window |
 | `build_dashboard.py` | Generates `grafana_dashboard.json` — run after any dashboard changes |
 | `grafana_dashboard.json` | Grafana dashboard definition — import this into Grafana |
 | `GRAFANA_SETUP.md` | Step-by-step Grafana setup guide |
@@ -52,6 +57,10 @@ pi_stats.py     :8001  ──────────►        │
 ### Windows PC
 - Python 3.7+ (stdlib only — no pip installs needed for collector)
 - [Grafana](https://grafana.com/grafana/download?platform=windows) installed as a Windows service
+- `pywebview` and `pystray` (only needed for `dashboard_app.py`):
+  ```powershell
+  pip install pywebview pystray
+  ```
 
 ---
 
@@ -191,6 +200,30 @@ Import into Grafana:
 4. Click **Import** (or **Import (Overwrite)** to replace an existing version)
 
 Dashboard URL: http://localhost:3000/d/dtr-monitor-v1
+
+---
+
+### Step 7 — dashboard_app.py: tray app (optional)
+
+`dashboard_app.py` opens the Grafana dashboard in a frameless window and sits in the system tray. Requires `pywebview` and `pystray`:
+
+```powershell
+pip install pywebview pystray
+python "G:\DTR\DTR-monitor\dashboard_app.py"
+```
+
+**Auto-start at logon:** create a shortcut to `dashboard_app.py` (or the compiled `.exe`) in:
+```
+%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\
+```
+
+**Compile to standalone exe** (no Python required on target machine):
+```powershell
+pip install pyinstaller
+pyinstaller --onefile --windowed --name DTRDashboard --hidden-import webview.platforms.edgechromium --hidden-import webview.platforms.winforms dashboard_app.py
+```
+
+Output: `dist\DTRDashboard.exe`
 
 ---
 

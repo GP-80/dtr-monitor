@@ -1,6 +1,12 @@
 config.py
 LOCAL_SETUP.md
+CHANGELOG.local.md
 dtr_monitor.db
 *.log
 __pycache__/
 *.pyc
+build/
+dist/
+*.spec
+music_server.py
+build_music_db.py
