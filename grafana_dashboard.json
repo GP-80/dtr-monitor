@@ -1,141 +1,94 @@
 {
   "__inputs": [
     {
+      "description": "SQLite datasource pointing to dtr_monitor.db",
+      "pluginId": "frser-sqlite-datasource",
       "name": "DS_SQLITE",
       "label": "SQLite (DTR)",
-      "description": "SQLite datasource pointing to dtr_monitor.db",
-      "type": "datasource",
-      "pluginId": "frser-sqlite-datasource",
-      "pluginName": "SQLite"
+      "pluginName": "SQLite",
+      "type": "datasource"
     }
   ],
-  "title": "Deep Trip Radio",
-  "uid": "dtr-monitor-v1",
-  "description": "Live monitoring \u2014 24/7 psychedelic internet radio",
-  "tags": [
-    "radio",
-    "icecast",
-    "raspberrypi"
-  ],
-  "style": "dark",
-  "timezone": "browser",
-  "refresh": "15s",
-  "time": {
-    "from": "now-24h",
-    "to": "now"
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
   },
-  "timepicker": {},
+  "description": "Live monitoring — 24/7 psychedelic internet radio",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "schemaVersion": 38,
-  "version": 1,
+  "links": [],
+  "liveNow": false,
   "panels": [
     {
-      "id": 1,
-      "type": "stat",
-      "title": "Stream",
-      "gridPos": {
-        "x": 0,
-        "y": 0,
-        "w": 4,
-        "h": 4
-      },
       "datasource": {
         "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
-          },
-          "rawQueryText": "SELECT online AS value FROM stream ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/.*/",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "value",
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "noValue": "\u2014"
+        "uid": "ffnbrga115bswf"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "",
-          "decimals": 0,
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "#f87171",
+                  "index": 0,
+                  "text": "Offline"
+                },
+                "1": {
+                  "color": "#34d399",
+                  "index": 1,
+                  "text": "● Live"
+                }
+              },
+              "type": "value"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "value": null,
                 "color": "#f87171"
               },
               {
-                "value": 1,
-                "color": "#34d399"
+                "color": "#34d399",
+                "value": 1
               }
             ]
           },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "Offline",
-                  "color": "#f87171",
-                  "index": 0
-                },
-                "1": {
-                  "text": "\u25cf Live",
-                  "color": "#34d399",
-                  "index": 1
-                }
-              }
-            }
-          ]
+          "unit": ""
         },
         "overrides": []
-      }
-    },
-    {
-      "id": 2,
-      "type": "stat",
-      "title": "Listeners",
+      },
       "gridPos": {
-        "x": 4,
-        "y": 0,
-        "w": 5,
-        "h": 4
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
       },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
-          },
-          "rawQueryText": "SELECT listeners AS value FROM stream ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
-        }
-      ],
+      "id": 1,
       "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "noValue": "—",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -143,60 +96,59 @@
           "fields": "/.*/",
           "values": false
         },
-        "orientation": "auto",
-        "textMode": "value",
-        "colorMode": "none",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "noValue": "\u2014"
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT online AS value FROM stream ORDER BY ts DESC LIMIT 1",
+          "refId": "A"
+        }
+      ],
+      "title": "Stream",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "",
-          "decimals": 0,
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 0,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "value": null,
                 "color": "#22d3ee"
               }
             ]
           },
-          "mappings": []
+          "unit": ""
         },
         "overrides": []
-      }
-    },
-    {
-      "id": 3,
-      "type": "stat",
-      "title": "Peak Today",
+      },
       "gridPos": {
-        "x": 9,
-        "y": 0,
-        "w": 3,
-        "h": 4
+        "h": 4,
+        "w": 5,
+        "x": 4,
+        "y": 0
       },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
-          },
-          "rawQueryText": "SELECT COALESCE(MAX(listeners), 0) AS value FROM stream WHERE date(ts, 'unixepoch') = date('now')",
-          "refId": "A",
-          "queryType": "table"
-        }
-      ],
+      "id": 2,
       "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "noValue": "—",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -204,60 +156,59 @@
           "fields": "/.*/",
           "values": false
         },
-        "orientation": "auto",
-        "textMode": "value",
-        "colorMode": "none",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "noValue": "\u2014"
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT listeners AS value FROM stream ORDER BY ts DESC LIMIT 1",
+          "refId": "A"
+        }
+      ],
+      "title": "Listeners",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "",
-          "decimals": 0,
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 0,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "value": null,
                 "color": "#8b5cf6"
               }
             ]
           },
-          "mappings": []
+          "unit": ""
         },
         "overrides": []
-      }
-    },
-    {
-      "id": 4,
-      "type": "stat",
-      "title": "Latency",
+      },
       "gridPos": {
-        "x": 12,
-        "y": 0,
+        "h": 4,
         "w": 3,
-        "h": 4
+        "x": 9,
+        "y": 0
       },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
-          },
-          "rawQueryText": "SELECT latency_ms AS value FROM stream ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
-        }
-      ],
+      "id": 3,
       "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "noValue": "—",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -265,291 +216,287 @@
           "fields": "/.*/",
           "values": false
         },
-        "orientation": "auto",
-        "textMode": "value",
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT COALESCE(MAX(listeners), 0) AS value FROM stream WHERE date(ts, 'unixepoch') = date('now')",
+          "refId": "A"
+        }
+      ],
+      "title": "Peak Today",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#34d399"
+              },
+              {
+                "color": "#fbbf24",
+                "value": 150
+              },
+              {
+                "color": "#f87171",
+                "value": 300
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 12,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "center",
-        "noValue": "\u2014"
+        "noValue": "—",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT latency_ms AS value FROM stream ORDER BY ts DESC LIMIT 1",
+          "refId": "A"
+        }
+      ],
+      "title": "Latency",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "ms",
-          "decimals": 0,
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 0,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "value": null,
-                "color": "#34d399"
-              },
-              {
-                "value": 150,
-                "color": "#fbbf24"
-              },
-              {
-                "value": 300,
-                "color": "#f87171"
+                "color": "#e2e8f0"
               }
             ]
           },
-          "mappings": []
+          "unit": ""
         },
         "overrides": []
-      }
-    },
-    {
-      "id": 5,
-      "type": "stat",
-      "title": "Pi Uptime",
+      },
       "gridPos": {
+        "h": 4,
+        "w": 3,
         "x": 15,
-        "y": 0,
-        "w": 3,
-        "h": 4
+        "y": 0
       },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
+      "id": 5,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "noValue": "—",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value"
       },
       "targets": [
         {
           "datasource": {
             "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
+            "uid": "ffnbrga115bswf"
           },
+          "queryType": "table",
           "rawQueryText": "SELECT printf('%dd %dh', uptime_s/86400, (uptime_s % 86400)/3600) AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
+          "refId": "A"
         }
       ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/.*/",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "value",
-        "colorMode": "none",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "noValue": "\u2014"
+      "title": "Pi Uptime",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "",
-          "decimals": 0,
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "#f87171",
+                  "index": 0,
+                  "text": "Down"
+                },
+                "1": {
+                  "color": "#34d399",
+                  "index": 1,
+                  "text": "Online"
+                }
+              },
+              "type": "value"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "value": null,
-                "color": "#e2e8f0"
+                "color": "#f87171"
+              },
+              {
+                "color": "#34d399",
+                "value": 1
               }
             ]
           },
-          "mappings": []
+          "unit": ""
         },
         "overrides": []
-      }
-    },
-    {
-      "id": 6,
-      "type": "stat",
-      "title": "icecast2",
+      },
       "gridPos": {
+        "h": 4,
+        "w": 3,
         "x": 18,
-        "y": 0,
-        "w": 3,
-        "h": 4
+        "y": 0
       },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
+      "id": 6,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "noValue": "—",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "value"
       },
       "targets": [
         {
           "datasource": {
             "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
+            "uid": "ffnbrga115bswf"
           },
+          "queryType": "table",
           "rawQueryText": "SELECT icecast2 AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
+          "refId": "A"
         }
       ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/.*/",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "value",
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "noValue": "\u2014"
+      "title": "icecast2",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "",
-          "decimals": 0,
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "#f87171",
+                  "index": 0,
+                  "text": "Down"
+                },
+                "1": {
+                  "color": "#34d399",
+                  "index": 1,
+                  "text": "Online"
+                }
+              },
+              "type": "value"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "value": null,
                 "color": "#f87171"
               },
               {
-                "value": 1,
-                "color": "#34d399"
+                "color": "#34d399",
+                "value": 1
               }
             ]
           },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "Down",
-                  "color": "#f87171",
-                  "index": 0
-                },
-                "1": {
-                  "text": "Online",
-                  "color": "#34d399",
-                  "index": 1
-                }
-              }
-            }
-          ]
+          "unit": ""
         },
         "overrides": []
-      }
-    },
-    {
-      "id": 7,
-      "type": "stat",
-      "title": "cloudflared",
+      },
       "gridPos": {
-        "x": 21,
-        "y": 0,
+        "h": 4,
         "w": 3,
-        "h": 4
+        "x": 21,
+        "y": 0
       },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
-          },
-          "rawQueryText": "SELECT cloudflared AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
-        }
-      ],
+      "id": 7,
       "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/.*/",
-          "values": false
-        },
-        "orientation": "auto",
-        "textMode": "value",
         "colorMode": "background",
         "graphMode": "none",
         "justifyMode": "center",
-        "noValue": "\u2014"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "",
-          "decimals": 0,
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "value": null,
-                "color": "#f87171"
-              },
-              {
-                "value": 1,
-                "color": "#34d399"
-              }
-            ]
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "Down",
-                  "color": "#f87171",
-                  "index": 0
-                },
-                "1": {
-                  "text": "Online",
-                  "color": "#34d399",
-                  "index": 1
-                }
-              }
-            }
-          ]
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 8,
-      "type": "stat",
-      "title": "Now Playing",
-      "gridPos": {
-        "x": 0,
-        "y": 4,
-        "w": 14,
-        "h": 5
-      },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
-          },
-          "rawQueryText": "SELECT title AS value FROM stream ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
-        }
-      ],
-      "options": {
+        "noValue": "—",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -557,63 +504,59 @@
           "fields": "/.*/",
           "values": false
         },
-        "orientation": "auto",
-        "textMode": "value",
-        "colorMode": "none",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "noValue": "\u2014",
-        "text": {
-          "valueSize": 32
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT cloudflared AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
+          "refId": "A"
         }
+      ],
+      "title": "cloudflared",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "",
-          "decimals": 0,
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 0,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "value": null,
                 "color": "#e2e8f0"
               }
             ]
           },
-          "mappings": []
+          "unit": ""
         },
         "overrides": []
-      }
-    },
-    {
-      "id": 9,
-      "type": "stat",
-      "title": "Artist",
+      },
       "gridPos": {
+        "h": 5,
+        "w": 6,
         "x": 0,
-        "y": 9,
-        "w": 14,
-        "h": 3
+        "y": 4
       },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
-          },
-          "rawQueryText": "SELECT artist AS value FROM stream ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
-        }
-      ],
+      "id": 8,
       "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "noValue": "—",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -621,73 +564,35 @@
           "fields": "/.*/",
           "values": false
         },
-        "orientation": "auto",
-        "textMode": "value",
-        "colorMode": "none",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "noValue": "\u2014",
         "text": {
           "valueSize": 32
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "",
-          "decimals": 0,
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "value": null,
-                "color": "#8b5cf6"
-              }
-            ]
-          },
-          "mappings": []
         },
-        "overrides": []
-      }
-    },
-    {
-      "id": 10,
-      "type": "table",
-      "title": "Recently Played",
-      "gridPos": {
-        "x": 14,
-        "y": 4,
-        "w": 10,
-        "h": 8
-      },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
+        "textMode": "value"
       },
       "targets": [
         {
           "datasource": {
             "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
+            "uid": "ffnbrga115bswf"
           },
-          "rawQueryText": "SELECT datetime(ts, 'unixepoch', 'localtime') AS played, artist, title FROM track_history ORDER BY ts DESC LIMIT 5",
-          "refId": "A",
-          "queryType": "table"
+          "queryType": "table",
+          "rawQueryText": "SELECT title AS value FROM stream ORDER BY ts DESC LIMIT 1",
+          "refId": "A"
         }
       ],
-      "options": {
-        "footer": {
-          "show": false
-        },
-        "showHeader": true
+      "title": "Now Playing",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
       },
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "fixed",
-            "fixedColor": "#e2e8f0"
+            "fixedColor": "#e2e8f0",
+            "mode": "fixed"
           },
           "custom": {
             "align": "left",
@@ -699,8 +604,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#e2e8f0",
-                "value": null
+                "color": "#e2e8f0"
               }
             ]
           }
@@ -727,8 +631,8 @@
               {
                 "id": "color",
                 "value": {
-                  "mode": "fixed",
-                  "fixedColor": "#475569"
+                  "fixedColor": "#475569",
+                  "mode": "fixed"
                 }
               }
             ]
@@ -750,8 +654,8 @@
               {
                 "id": "color",
                 "value": {
-                  "mode": "fixed",
-                  "fixedColor": "#8b5cf6"
+                  "fixedColor": "#8b5cf6",
+                  "mode": "fixed"
                 }
               }
             ]
@@ -770,47 +674,100 @@
           }
         ]
       },
-      "transformations": []
-    },
-    {
-      "id": 11,
-      "type": "barchart",
-      "title": "Listener History \u2014 ${history_period:text}",
       "gridPos": {
-        "x": 0,
-        "y": 12,
-        "w": 24,
-        "h": 8
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 4
       },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
+      "id": 10,
+      "options": {
+        "footer": {
+          "show": false
+        },
+        "showHeader": true
       },
       "targets": [
         {
           "datasource": {
             "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
+            "uid": "ffnbrga115bswf"
           },
-          "rawQueryText": "SELECT strftime('%H:00', datetime(MIN(ts), 'unixepoch', 'localtime')) AS hour, MAX(listeners) AS listeners FROM stream WHERE ts >= strftime('%s','now') - $history_period GROUP BY strftime('%Y%m%d%H', datetime(ts, 'unixepoch', 'localtime')) ORDER BY MIN(ts)",
-          "refId": "A",
-          "queryType": "table"
+          "queryType": "table",
+          "rawQueryText": "SELECT datetime(ts,'unixepoch','localtime') AS played, artist, title, (SELECT COUNT(*) FROM track_history t2 WHERE t2.title=th.title AND t2.artist=th.artist AND t2.ts > strftime('%s','now')-604800) AS 'plays 7d' FROM track_history th ORDER BY ts DESC LIMIT 5",
+          "refId": "A"
         }
       ],
-      "options": {
-        "xField": "hour",
-        "barWidth": 0.85,
-        "fillOpacity": 70,
-        "gradientMode": "opacity",
-        "orientation": "auto",
-        "stacking": "none",
-        "showValue": "never",
-        "legend": {
-          "showLegend": false
+      "title": "Recently Played",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#8b5cf6"
+              }
+            ]
+          },
+          "unit": ""
         },
-        "tooltip": {
-          "mode": "single"
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 9
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "noValue": "—",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "text": {
+          "valueSize": 32
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT artist AS value FROM stream ORDER BY ts DESC LIMIT 1",
+          "refId": "A"
         }
+      ],
+      "title": "Artist",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
       },
       "fieldConfig": {
         "defaults": {
@@ -818,375 +775,747 @@
             "fixedColor": "#22d3ee",
             "mode": "fixed"
           },
-          "unit": "none",
-          "decimals": 0,
-          "min": 0,
           "custom": {
             "fillOpacity": 70,
-            "lineWidth": 0,
-            "gradientMode": "opacity"
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 12,
-      "type": "gauge",
-      "title": "CPU",
-      "gridPos": {
-        "x": 0,
-        "y": 20,
-        "w": 5,
-        "h": 8
-      },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
+            "gradientMode": "opacity",
+            "lineWidth": 0
           },
-          "rawQueryText": "SELECT cpu_pct AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "decimals": 1,
-          "min": 0,
-          "max": 100,
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "value": null,
-                "color": "#34d399"
-              },
-              {
-                "value": 60,
-                "color": "#fbbf24"
-              },
-              {
-                "value": 80,
-                "color": "#f87171"
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 13,
-      "type": "gauge",
-      "title": "Memory",
-      "gridPos": {
-        "x": 5,
-        "y": 20,
-        "w": 5,
-        "h": 8
-      },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
-          },
-          "rawQueryText": "SELECT mem_pct AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "decimals": 1,
-          "min": 0,
-          "max": 100,
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "value": null,
-                "color": "#34d399"
-              },
-              {
-                "value": 70,
-                "color": "#fbbf24"
-              },
-              {
-                "value": 85,
-                "color": "#f87171"
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 14,
-      "type": "gauge",
-      "title": "Temperature",
-      "gridPos": {
-        "x": 10,
-        "y": 20,
-        "w": 5,
-        "h": 8
-      },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
-          },
-          "rawQueryText": "SELECT temp_c AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "celsius",
-          "decimals": 1,
-          "min": 20,
-          "max": 85,
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "value": null,
-                "color": "#34d399"
-              },
-              {
-                "value": 55,
-                "color": "#fbbf24"
-              },
-              {
-                "value": 70,
-                "color": "#f87171"
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 15,
-      "type": "gauge",
-      "title": "Disk",
-      "gridPos": {
-        "x": 15,
-        "y": 20,
-        "w": 5,
-        "h": 8
-      },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
-          },
-          "rawQueryText": "SELECT disk_pct AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "decimals": 1,
-          "min": 0,
-          "max": 100,
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "value": null,
-                "color": "#34d399"
-              },
-              {
-                "value": 70,
-                "color": "#fbbf24"
-              },
-              {
-                "value": 85,
-                "color": "#f87171"
-              }
-            ]
-          },
-          "mappings": []
-        },
-        "overrides": []
-      }
-    },
-    {
-      "id": 16,
-      "type": "gauge",
-      "title": "WiFi Signal",
-      "gridPos": {
-        "x": 20,
-        "y": 20,
-        "w": 4,
-        "h": 8
-      },
-      "datasource": {
-        "type": "frser-sqlite-datasource",
-        "uid": "${DS_SQLITE}"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "${DS_SQLITE}"
-          },
-          "rawQueryText": "SELECT wifi_dbm AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
-          "refId": "A",
-          "queryType": "table"
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "dBm",
           "decimals": 0,
-          "min": -100,
-          "max": -30,
+          "min": 0,
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 11,
+      "options": {
+        "barWidth": 0.85,
+        "fillOpacity": 70,
+        "gradientMode": "opacity",
+        "legend": {
+          "showLegend": false
+        },
+        "orientation": "auto",
+        "showValue": "never",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single"
+        },
+        "xField": "hour"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT strftime('%H:00', datetime(MIN(ts), 'unixepoch', 'localtime')) AS hour, MAX(listeners) AS listeners FROM stream WHERE ts >= strftime('%s','now') - $history_period GROUP BY strftime('%Y%m%d%H', datetime(ts, 'unixepoch', 'localtime')) ORDER BY MIN(ts)",
+          "refId": "A"
+        }
+      ],
+      "title": "Listener History — ${history_period:text}",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
+      },
+      "fieldConfig": {
+        "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 1,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "value": null,
-                "color": "#f87171"
-              },
-              {
-                "value": -75,
-                "color": "#fbbf24"
-              },
-              {
-                "value": -60,
                 "color": "#34d399"
+              },
+              {
+                "color": "#fbbf24",
+                "value": 60
+              },
+              {
+                "color": "#f87171",
+                "value": 80
               }
             ]
           },
-          "mappings": []
+          "unit": "percent"
         },
         "overrides": []
-      }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 0,
+        "y": 25
+      },
+      "id": 12,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT cpu_pct AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
+          "refId": "A"
+        }
+      ],
+      "title": "CPU",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#34d399"
+              },
+              {
+                "color": "#fbbf24",
+                "value": 70
+              },
+              {
+                "color": "#f87171",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 5,
+        "y": 25
+      },
+      "id": 13,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT mem_pct AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
+          "refId": "A"
+        }
+      ],
+      "title": "Memory",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "max": 85,
+          "min": 20,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#34d399"
+              },
+              {
+                "color": "#fbbf24",
+                "value": 55
+              },
+              {
+                "color": "#f87171",
+                "value": 70
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 10,
+        "y": 25
+      },
+      "id": 14,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT temp_c AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
+          "refId": "A"
+        }
+      ],
+      "title": "Temperature",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#34d399"
+              },
+              {
+                "color": "#fbbf24",
+                "value": 70
+              },
+              {
+                "color": "#f87171",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 15,
+        "y": 25
+      },
+      "id": 15,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT disk_pct AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
+          "refId": "A"
+        }
+      ],
+      "title": "Disk",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": -30,
+          "min": -100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#f87171"
+              },
+              {
+                "color": "#fbbf24",
+                "value": -75
+              },
+              {
+                "color": "#34d399",
+                "value": -60
+              }
+            ]
+          },
+          "unit": "dBm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 20,
+        "y": 25
+      },
+      "id": 16,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT wifi_dbm AS value FROM pi_system ORDER BY ts DESC LIMIT 1",
+          "refId": "A"
+        }
+      ],
+      "title": "WiFi Signal",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 10,
+        "x": 6,
+        "y": 4
+      },
+      "id": 17,
+      "options": {
+        "basemap": {
+          "config": {
+            "theme": "dark"
+          },
+          "name": "Basemap",
+          "type": "carto"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "fixedColor": "#34d399",
+                  "mode": "fixed"
+                },
+                "opacity": 0.85,
+                "size": {
+                  "fixed": 8,
+                  "mode": "fixed"
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "location": {
+              "latitude": "lat",
+              "longitude": "lon",
+              "mode": "coords"
+            },
+            "name": "Active",
+            "tooltip": {
+              "mode": "details"
+            },
+            "type": "markers"
+          },
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "fixedColor": "#fbbf24",
+                  "mode": "fixed"
+                },
+                "opacity": 0.85,
+                "size": {
+                  "fixed": 8,
+                  "mode": "fixed"
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "B"
+            },
+            "location": {
+              "latitude": "lat",
+              "longitude": "lon",
+              "mode": "coords"
+            },
+            "name": "Last 24h",
+            "tooltip": {
+              "mode": "details"
+            },
+            "type": "markers"
+          },
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "fixedColor": "#f87171",
+                  "mode": "fixed"
+                },
+                "opacity": 0.85,
+                "size": {
+                  "fixed": 8,
+                  "mode": "fixed"
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "C"
+            },
+            "location": {
+              "latitude": "lat",
+              "longitude": "lon",
+              "mode": "coords"
+            },
+            "name": "Last week",
+            "tooltip": {
+              "mode": "details"
+            },
+            "type": "markers"
+          }
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "id": "zero",
+          "lat": 20,
+          "lon": 0,
+          "zoom": 0
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT lat,lon,city||', '||country AS name FROM listener_locations WHERE status='active' AND lat IS NOT NULL",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT lat,lon,city||', '||country AS name FROM listener_locations WHERE status='recent' AND lat IS NOT NULL",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT lat,lon,city||', '||country AS name FROM listener_locations WHERE status='past' AND lat IS NOT NULL",
+          "refId": "C"
+        }
+      ],
+      "title": "Listener Locations",
+      "transparent": false,
+      "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#8b5cf6"
+              }
+            ]
+          },
+          "unit": ""
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 13
+      },
+      "id": 18,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "noValue": "—",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "text": {
+          "valueSize": 22
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT genre AS value FROM stream WHERE genre != '' ORDER BY ts DESC LIMIT 1",
+          "refId": "A"
+        }
+      ],
+      "title": "Genre",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "ffnbrga115bswf"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": ""
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 11
+      },
+      "id": 19,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "text": {}
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "ffnbrga115bswf"
+          },
+          "queryType": "table",
+          "rawQueryText": "SELECT s.genre, COUNT(*) AS songs FROM track_history th JOIN stream s ON s.ts = (SELECT ts FROM stream WHERE ts >= th.ts ORDER BY ts ASC LIMIT 1) WHERE th.ts > strftime('%s','now') - 86400 AND s.genre != '' GROUP BY s.genre ORDER BY songs DESC LIMIT 8",
+          "refId": "A"
+        }
+      ],
+      "title": "Genres — last 24h",
+      "transformations": {
+        "id": "rowsToFields",
+        "options": {
+          "mappings": [
+            {
+              "fieldName": "genre",
+              "handlerKey": "name"
+            },
+            {
+              "fieldName": "plays",
+              "handlerKey": "value"
+            }
+          ]
+        }
+      },
+      "transparent": false,
+      "type": "bargauge"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 10,
+        "x": 6,
+        "y": 16
+      },
+      "id": 20,
+      "options": {
+        "content": "<div style=\"display:flex;gap:14px;justify-content:center;align-items:center;height:100%;font-size:9px;opacity:0.7\"><span><span style=\"display:inline-block;width:6px;height:6px;border-radius:50%;background:#34d399;margin-right:4px\"></span>Active</span><span><span style=\"display:inline-block;width:6px;height:6px;border-radius:50%;background:#fbbf24;margin-right:4px\"></span>Last 24h</span><span><span style=\"display:inline-block;width:6px;height:6px;border-radius:50%;background:#f87171;margin-right:4px\"></span>Last week</span></div>",
+        "mode": "html"
+      },
+      "targets": [],
+      "title": "",
+      "transparent": true,
+      "type": "text"
     }
   ],
-  "annotations": {
-    "list": []
-  },
+  "refresh": "15s",
+  "schemaVersion": 42,
+  "tags": [
+    "radio",
+    "icecast",
+    "raspberrypi"
+  ],
   "templating": {
     "list": [
       {
-        "type": "custom",
-        "name": "history_period",
-        "label": "History",
-        "query": "5 min : 300, 30 min : 1800, 1 h : 3600, 6 h : 21600, 12 h : 43200, 24 h : 86400, 7 days : 604800",
-        "queryValue": "",
         "current": {
           "selected": true,
           "text": "24 h",
           "value": "86400"
         },
+        "hide": 0,
+        "includeAll": false,
+        "label": "History",
+        "multi": false,
+        "name": "history_period",
         "options": [
           {
             "selected": false,
@@ -1224,16 +1553,22 @@
             "value": "604800"
           }
         ],
-        "hide": 0,
-        "includeAll": false,
-        "multi": false,
-        "skipUrlSync": false,
+        "query": "5 min : 300, 30 min : 1800, 1 h : 3600, 6 h : 21600, 12 h : 43200, 24 h : 86400, 7 days : 604800",
+        "queryValue": "",
         "refresh": 0,
-        "sort": 0
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "custom"
       }
     ]
   },
-  "links": [],
-  "fiscalYearStartMonth": 0,
-  "liveNow": false
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Deep Trip Radio",
+  "uid": "dtr-monitor-v1",
+  "weekStart": ""
 }

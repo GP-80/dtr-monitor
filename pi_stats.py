@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Deep Trip Radio — Pi system stats server. Runs on port 8001."""
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import json, os, subprocess, time, threading
+from urllib.request import urlopen, Request as UReq
+import json, os, sqlite3, subprocess, time, threading
 from datetime import date
 
 # ── CPU sampling ──────────────────────────────────────────────────────────────
@@ -78,6 +79,84 @@ def svc_active(name):
     except Exception:
         return False
 
+# ── Listener geolocation ──────────────────────────────────────────────────────
+LISTENER_DB  = '/home/deeptripradio/listener_data.sqlite'
+_geo_pending = set()
+_geo_lock    = threading.Lock()
+
+def _is_private(ip):
+    return not ip or ip in ('127.0.0.1', '::1') or ip.startswith(
+        ('10.', '192.168.', '172.16.', '172.17.', '172.18.', '172.19.',
+         '172.2', '172.30.', '172.31.', 'fc', 'fd'))
+
+def _geolocate(ip):
+    try:
+        req = UReq(f'http://ip-api.com/json/{ip}?fields=status,lat,lon,country,city',
+                   headers={'User-Agent': 'DTR-Monitor/1.0'})
+        with urlopen(req, timeout=4) as r:
+            d = json.loads(r.read())
+        if d.get('status') == 'success':
+            return d.get('lat'), d.get('lon'), d.get('country', ''), d.get('city', '')
+    except Exception:
+        pass
+    return None, None, '', ''
+
+def _geo_worker():
+    while True:
+        with _geo_lock:
+            pending = list(_geo_pending)
+        for ip in pending:
+            lat, lon, country, city = _geolocate(ip)
+            try:
+                conn = sqlite3.connect(LISTENER_DB, timeout=3)
+                conn.execute('''CREATE TABLE IF NOT EXISTS geo_cache
+                    (ip TEXT PRIMARY KEY, lat REAL, lon REAL, country TEXT, city TEXT)''')
+                conn.execute('INSERT OR REPLACE INTO geo_cache VALUES (?,?,?,?,?)',
+                             (ip, lat, lon, country, city))
+                conn.commit()
+                conn.close()
+            except Exception:
+                pass
+            with _geo_lock:
+                _geo_pending.discard(ip)
+        time.sleep(2)
+
+threading.Thread(target=_geo_worker, daemon=True).start()
+
+def listener_geo():
+    now = int(time.time())
+    try:
+        conn = sqlite3.connect(LISTENER_DB, timeout=3)
+        conn.execute('''CREATE TABLE IF NOT EXISTS pings
+            (ts INTEGER, ip TEXT)''')
+        conn.execute('''CREATE TABLE IF NOT EXISTS geo_cache
+            (ip TEXT PRIMARY KEY, lat REAL, lon REAL, country TEXT, city TEXT)''')
+        rows = conn.execute(
+            'SELECT ip, MAX(ts) as last FROM pings WHERE ts > ? AND ip != "" GROUP BY ip',
+            (now - 7 * 86400,)
+        ).fetchall()
+        result = []
+        for ip, last in rows:
+            if _is_private(ip):
+                continue
+            geo = conn.execute('SELECT lat, lon, country, city FROM geo_cache WHERE ip=?',
+                               (ip,)).fetchone()
+            if geo is None:
+                with _geo_lock:
+                    _geo_pending.add(ip)
+                continue
+            lat, lon, country, city = geo
+            if lat is None:
+                continue
+            age = now - last
+            status = 'active' if age < 300 else ('recent' if age < 86400 else 'past')
+            result.append({'ip': ip, 'lat': lat, 'lon': lon, 'country': country,
+                           'city': city, 'status': status, 'last_ping': last})
+        conn.close()
+        return result
+    except Exception:
+        return []
+
 # ── Icecast session log parser ─────────────────────────────────────────────────
 LOG = '/var/log/icecast2/access.log'
 
@@ -122,6 +201,8 @@ class Handler(BaseHTTPRequestHandler):
                 },
                 'ts': int(time.time()),
             }).encode()
+        elif self.path == '/listener-geo':
+            body = json.dumps(listener_geo()).encode()
         elif self.path == '/sessions':
             body = json.dumps(sessions()).encode()
         else:

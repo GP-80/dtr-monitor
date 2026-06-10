@@ -16,8 +16,10 @@ from urllib.request import urlopen, Request
 
 # ── Config ───────────────────────────────────────────────────────────────────
 from config import PI_IP, DB_PATH as _DB_PATH
-ICECAST_URL = f'http://{PI_IP}:8000/status-json.xsl'
-STATS_URL   = f'http://{PI_IP}:8001/stats'
+ICECAST_URL  = f'http://{PI_IP}:8000/status-json.xsl'
+STATS_URL    = f'http://{PI_IP}:8001/stats'
+NOW_URL      = 'https://stream.deeptripradio.net/api/now'
+GEO_URL      = f'http://{PI_IP}:8001/listener-geo'
 INTERVAL    = 15       # seconds between polls
 PRUNE_DAYS  = 7        # delete rows older than this
 DB_PATH     = Path(_DB_PATH)
@@ -38,7 +40,8 @@ CREATE TABLE IF NOT EXISTS stream (
     listeners   INTEGER,
     title       TEXT,
     artist      TEXT,
-    latency_ms  INTEGER                -- ms to reach icecast endpoint
+    latency_ms  INTEGER,               -- ms to reach icecast endpoint
+    genre       TEXT
 );
 CREATE TABLE IF NOT EXISTS pi_system (
     ts            INTEGER PRIMARY KEY,
@@ -60,6 +63,15 @@ CREATE TABLE IF NOT EXISTS track_history (
     ts      INTEGER PRIMARY KEY,       -- when the track started playing
     title   TEXT,
     artist  TEXT
+);
+CREATE TABLE IF NOT EXISTS listener_locations (
+    ip         TEXT PRIMARY KEY,
+    lat        REAL,
+    lon        REAL,
+    country    TEXT,
+    city       TEXT,
+    last_ping  INTEGER,
+    status     TEXT
 );
 '''
 
@@ -105,6 +117,27 @@ def poll_stream():
         log.warning(f'icecast poll failed: {e}')
         return {'online': 0, 'listeners': 0, 'title': '', 'artist': '', 'latency_ms': None}
 
+def poll_now():
+    try:
+        return fetch(NOW_URL).get('genre', '')
+    except Exception:
+        return ''
+
+def poll_listener_geo():
+    try:
+        return fetch(GEO_URL)
+    except Exception:
+        return []
+
+def write_listener_geo(conn, rows):
+    for r in rows:
+        conn.execute(
+            'INSERT OR REPLACE INTO listener_locations VALUES (?,?,?,?,?,?,?)',
+            (r.get('ip', ''), r.get('lat'), r.get('lon'),
+             r.get('country', ''), r.get('city', ''),
+             r.get('last_ping'), r.get('status', '')),
+        )
+
 def poll_pi():
     try:
         return fetch(STATS_URL)
@@ -115,8 +148,8 @@ def poll_pi():
 # ── Write ─────────────────────────────────────────────────────────────────────
 def write_stream(conn, ts, s):
     conn.execute(
-        'INSERT OR REPLACE INTO stream VALUES (?,?,?,?,?,?)',
-        (ts, s['online'], s['listeners'], s['title'], s['artist'], s['latency_ms']),
+        'INSERT OR REPLACE INTO stream VALUES (?,?,?,?,?,?,?)',
+        (ts, s['online'], s['listeners'], s['title'], s['artist'], s['latency_ms'], s.get('genre', '')),
     )
 
 def write_pi(conn, ts, pi):
@@ -148,8 +181,10 @@ def write_track(conn, ts, title, artist):
 # ── Main loop ─────────────────────────────────────────────────────────────────
 def main():
     conn       = open_db()
-    last_title = None
     last_prune = time.time()
+    cycle      = 0
+    row        = conn.execute('SELECT title FROM track_history ORDER BY ts DESC LIMIT 1').fetchone()
+    last_title = row[0] if row else None
 
     log.info(f'Collector started  db={DB_PATH}')
     log.info(f'Pi={PI_IP}  interval={INTERVAL}s  keep={PRUNE_DAYS}d')
@@ -157,10 +192,16 @@ def main():
     while True:
         now    = int(time.time())
         stream = poll_stream()
+        stream['genre'] = poll_now()
         pi     = poll_pi()
 
         write_stream(conn, now, stream)
         write_pi(conn, now, pi)
+
+        if cycle % 4 == 0:
+            geo = poll_listener_geo()
+            if geo:
+                write_listener_geo(conn, geo)
 
         # record track changes
         title = stream['title']
@@ -170,6 +211,7 @@ def main():
 
         conn.commit()
 
+        cycle += 1
         if now - last_prune > 86400:
             prune(conn)
             last_prune = now

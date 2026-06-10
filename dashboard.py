@@ -569,7 +569,7 @@ class Handler(BaseHTTPRequestHandler):
 if __name__ == '__main__':
     t = threading.Thread(target=_poll, daemon=True)
     t.start()
-    print(f'DTR Monitor → http://localhost:{PORT}')
+    print(f'DTR Monitor -> http://localhost:{PORT}')
     print(f'Polling Pi at {PI_IP} every {POLL_S}s')
     srv = HTTPServer(('localhost', PORT), Handler)
     try:

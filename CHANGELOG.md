@@ -2,6 +2,40 @@
 
 ---
 
+## 2026-06-10 — Listener geolocation, genre tracking, dashboard layout
+
+### Added
+
+- **Listener geolocation pipeline** — active and recent listeners are shown as coloured dots on a world map in the Grafana dashboard:
+  - `pi_stats.py`: geo worker thread geolocates listener IPs in the background via ip-api.com (free, no key); caches results in `listener_data.sqlite`; exposes `/listener-geo` endpoint returning `{ip, lat, lon, country, city, status, last_ping}` per unique IP seen in the last 7 days
+  - `collector.py`: polls `/listener-geo` every ~60 s and upserts into a new `listener_locations` table in `dtr_monitor.db`
+  - Status: `active` = last ping < 5 min, `recent` = < 24 h, `past` = < 7 d
+
+- **Genre tracking** — `collector.py` fetches `/api/now` from the music server every cycle to get the current genre, stores it in a new `genre` column on the `stream` table; Grafana shows the current genre in a dedicated panel below Artist
+
+- **Genres — last 24 h panel** — vertical bar gauge showing songs played per genre in the last 24 h, derived by joining `track_history` with `stream` on timestamp
+
+- **Listener Locations map** (Grafana Geomap panel) — three marker layers (Active / Last 24 h / Last week) with fixed green / yellow / red colours; static HTML legend panel below the map
+
+- **Plays 7d column** in Recently Played table — shows how many times each song appeared in `track_history` in the last 7 days
+
+### Changed
+
+- **Grafana layout** — Now Playing / Artist / Genre column narrowed to w=6; Listener Locations map at w=10 h=12; Recently Played at w=8; Genres bar gauge fills space below Recently Played; Listener History and Pi stats pushed down for breathing room; all panels in the left column equal-height
+
+- **`collector.py`** — seeds `last_title` from DB on startup to prevent re-recording the currently playing track after a restart; added `cycle` counter for periodic geo polling
+
+- **`pi_stats.py`** — added geo worker + `/listener-geo` endpoint; `recent` threshold changed from 12 h to 24 h
+
+- **`dashboard.py`** — fixed `→` character in print statement (Windows cp1253 encoding)
+
+### Schema changes
+
+- `stream` table: added `genre TEXT` column (migrate existing DB with `ALTER TABLE stream ADD COLUMN genre TEXT`)
+- new `listener_locations` table: `ip, lat, lon, country, city, last_ping, status`
+
+---
+
 ## 2026-05-28 — Tray dashboard app
 
 ### Added
