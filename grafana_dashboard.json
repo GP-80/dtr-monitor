@@ -2,9 +2,9 @@
   "__inputs": [
     {
       "description": "SQLite datasource pointing to dtr_monitor.db",
-      "pluginId": "frser-sqlite-datasource",
-      "name": "DS_SQLITE",
       "label": "SQLite (DTR)",
+      "name": "DS_SQLITE",
+      "pluginId": "frser-sqlite-datasource",
       "pluginName": "SQLite",
       "type": "datasource"
     }
@@ -29,6 +29,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
+  "id": 1468416676900864,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -1163,7 +1164,25 @@
         "uid": "ffnbrga115bswf"
       },
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#34d399",
+                "value": null
+              },
+              {
+                "color": "#fbbf24",
+                "value": 1
+              },
+              {
+                "color": "#f87171",
+                "value": 2
+              }
+            ]
+          }
+        },
         "overrides": []
       },
       "gridPos": {
@@ -1192,8 +1211,8 @@
               "showLegend": false,
               "style": {
                 "color": {
-                  "fixedColor": "#34d399",
-                  "mode": "fixed"
+                  "field": "status_num",
+                  "mode": "thresholds"
                 },
                 "opacity": 0.85,
                 "size": {
@@ -1206,84 +1225,12 @@
                 }
               }
             },
-            "filterData": {
-              "id": "byRefId",
-              "options": "A"
-            },
             "location": {
               "latitude": "lat",
               "longitude": "lon",
               "mode": "coords"
             },
-            "name": "Active",
-            "tooltip": {
-              "mode": "details"
-            },
-            "type": "markers"
-          },
-          {
-            "config": {
-              "showLegend": false,
-              "style": {
-                "color": {
-                  "fixedColor": "#fbbf24",
-                  "mode": "fixed"
-                },
-                "opacity": 0.85,
-                "size": {
-                  "fixed": 8,
-                  "mode": "fixed"
-                },
-                "symbol": {
-                  "fixed": "img/icons/marker/circle.svg",
-                  "mode": "fixed"
-                }
-              }
-            },
-            "filterData": {
-              "id": "byRefId",
-              "options": "B"
-            },
-            "location": {
-              "latitude": "lat",
-              "longitude": "lon",
-              "mode": "coords"
-            },
-            "name": "Last 24h",
-            "tooltip": {
-              "mode": "details"
-            },
-            "type": "markers"
-          },
-          {
-            "config": {
-              "showLegend": false,
-              "style": {
-                "color": {
-                  "fixedColor": "#f87171",
-                  "mode": "fixed"
-                },
-                "opacity": 0.85,
-                "size": {
-                  "fixed": 8,
-                  "mode": "fixed"
-                },
-                "symbol": {
-                  "fixed": "img/icons/marker/circle.svg",
-                  "mode": "fixed"
-                }
-              }
-            },
-            "filterData": {
-              "id": "byRefId",
-              "options": "C"
-            },
-            "location": {
-              "latitude": "lat",
-              "longitude": "lon",
-              "mode": "coords"
-            },
-            "name": "Last week",
+            "name": "Listeners",
             "tooltip": {
               "mode": "details"
             },
@@ -1311,26 +1258,8 @@
             "uid": "ffnbrga115bswf"
           },
           "queryType": "table",
-          "rawQueryText": "SELECT lat,lon,city||', '||country AS name FROM listener_locations WHERE status='active' AND lat IS NOT NULL",
+          "rawQueryText": "SELECT lat, lon, city||', '||country AS name, CASE status WHEN 'active' THEN 0 WHEN 'recent' THEN 1 ELSE 2 END AS status_num FROM listener_locations WHERE lat IS NOT NULL",
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "ffnbrga115bswf"
-          },
-          "queryType": "table",
-          "rawQueryText": "SELECT lat,lon,city||', '||country AS name FROM listener_locations WHERE status='recent' AND lat IS NOT NULL",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "frser-sqlite-datasource",
-            "uid": "ffnbrga115bswf"
-          },
-          "queryType": "table",
-          "rawQueryText": "SELECT lat,lon,city||', '||country AS name FROM listener_locations WHERE status='past' AND lat IS NOT NULL",
-          "refId": "C"
         }
       ],
       "title": "Listener Locations",
@@ -1570,5 +1499,6 @@
   "timezone": "browser",
   "title": "Deep Trip Radio",
   "uid": "dtr-monitor-v1",
+  "version": 56,
   "weekStart": ""
 }

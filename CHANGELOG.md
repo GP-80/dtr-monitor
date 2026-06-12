@@ -2,6 +2,14 @@
 
 ---
 
+## 2026-06-12 — Fix listener map color classification
+
+### Fixed
+
+- **Listener map colors** — replaced the three-layer `filterData` approach (which failed silently in Grafana 13, rendering all dots green) with a single SQL query returning a numeric `status_num` field (`0=active`, `1=recent 24h`, `2=past 7d`) and Grafana threshold coloring on the markers layer. Active listeners now show green, last-24h listeners yellow, last-week listeners red.
+
+---
+
 ## 2026-06-10 — Listener geolocation, genre tracking, dashboard layout
 
 ### Added
