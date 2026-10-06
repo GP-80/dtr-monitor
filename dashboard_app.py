@@ -18,11 +18,19 @@ _tray            = None
 _collector_on    = False
 
 
-def _check_collector_running():
-    out = subprocess.run(
-        ['wmic', 'process', 'where', 'name="pythonw.exe"', 'get', 'CommandLine'],
-        capture_output=True, text=True
+def _powershell(command):
+    # wmic is no longer shipped with Windows 11, so query processes via CIM instead
+    return subprocess.run(
+        ['powershell', '-NoProfile', '-Command', command],
+        capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
     ).stdout
+
+
+def _check_collector_running():
+    out = _powershell(
+        "Get-CimInstance Win32_Process -Filter \"Name='pythonw.exe'\" | "
+        "Select-Object -ExpandProperty CommandLine"
+    )
     return 'collector.py' in out
 
 
@@ -43,9 +51,9 @@ def _show(icon=None, _item=None):
 def _toggle_collector(icon=None, _item=None):
     global _collector_on
     if _collector_on:
-        subprocess.run(
-            ['wmic', 'process', 'where', 'CommandLine like "%collector.py%"', 'delete'],
-            capture_output=True
+        _powershell(
+            "Get-CimInstance Win32_Process -Filter \"Name='pythonw.exe' AND CommandLine LIKE '%collector.py%'\" | "
+            "Invoke-CimMethod -MethodName Terminate"
         )
         _collector_on = False
     else:

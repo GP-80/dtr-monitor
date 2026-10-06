@@ -2,6 +2,19 @@
 
 ---
 
+## 2026-10-06 — Rebuild on fresh Windows; tray app without wmic
+
+### Fixed
+
+- **`dashboard_app.py` collector toggle** — `wmic` is no longer shipped with Windows 11, so the Enable/Disable Collector menu item silently did nothing. Process detection and termination now use PowerShell `Get-CimInstance Win32_Process` (run without a console window). Rebuilt `DTRDashboard.exe` with the same PyInstaller command
+
+### Notes
+
+- Rebuilt on Grafana 13.2.3 with `frser-sqlite-datasource` 4.0.6. The datasource is provisioned with uid `ffnbrga115bswf` (the uid every panel references), so `grafana_dashboard.json` imports unchanged
+- When installing the plugin via `grafana cli` from an elevated prompt, pass `--pluginsDir "C:\Program Files\GrafanaLabs\grafana\data\plugins"`. Otherwise the default relative path resolves against the current directory (e.g. `C:\Windows\data\plugins`) and Grafana reports "plugin not registered"
+
+---
+
 ## 2026-06-12 — Fix listener map color classification
 
 ### Fixed
